@@ -1,23 +1,43 @@
 const express = require("express");
+const bodyParser = require("body-parser");
+const pool = require("./db");
 const path = require("path");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware para procesar formularios
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Servir archivos estáticos desde /public
-app.use(express.static("public"));
+// Ruta principal con el formulario
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "views", "index.html"));
+});
 
-// Ruta para manejar el POST del formulario
-app.post("/login", (req, res) => {
-  const { username, password } = req.body;
+// Registro de usuario
+app.post("/register", async (req, res) => {
+  const { nombre, password } = req.body;
+  try {
+    await pool.query("INSERT INTO usuarios (nombre, password) VALUES ($1, $2)", [nombre, password]);
+    res.send("✅ Usuario registrado correctamente");
+  } catch (err) {
+    console.error(err);
+    res.send("❌ Error al registrar usuario");
+  }
+});
 
-  // ⚠️ Lógica de prueba, no segura
-  if (username === "admin" && password === "1234") {
-    res.send(`<h2>Bienvenido, ${username} 🚀</h2>`);
-  } else {
-    res.send("<h2>Usuario o contraseña incorrectos ❌</h2>");
+// Login
+app.post("/login", async (req, res) => {
+  const { nombre, password } = req.body;
+  try {
+    const result = await pool.query("SELECT * FROM usuarios WHERE nombre = $1 AND password = $2", [nombre, password]);
+    if (result.rows.length > 0) {
+      res.send("🎉 Login exitoso, bienvenido " + nombre);
+    } else {
+      res.send("❌ Usuario o contraseña incorrectos");
+    }
+  } catch (err) {
+    console.error(err);
+    res.send("❌ Error al hacer login");
   }
 });
 
