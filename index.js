@@ -8,32 +8,47 @@ const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Ruta principal con el formulario
+// === Vistas ===
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "index.html"));
+  res.sendFile(path.join(__dirname, "views", "login.html"));
 });
 
-// Registro de usuario
+app.get("/register", (req, res) => {
+  res.sendFile(path.join(__dirname, "views", "register.html"));
+});
+
+// === Acciones ===
 app.post("/register", async (req, res) => {
   const { nombre, password } = req.body;
   try {
     await pool.query("INSERT INTO usuarios (nombre, password) VALUES ($1, $2)", [nombre, password]);
-    res.send("✅ Usuario registrado correctamente");
+    res.send(`
+      <p>✅ Usuario registrado correctamente</p>
+      <a href="/">Volver al login</a>
+    `);
   } catch (err) {
     console.error(err);
-    res.send("❌ Error al registrar usuario");
+    res.send(`
+      <p>❌ Error al registrar usuario</p>
+      <a href="/register">Volver a registro</a>
+    `);
   }
 });
 
-// Login
 app.post("/login", async (req, res) => {
   const { nombre, password } = req.body;
   try {
-    const result = await pool.query("SELECT * FROM usuarios WHERE nombre = $1 AND password = $2", [nombre, password]);
+    const result = await pool.query(
+      "SELECT * FROM usuarios WHERE nombre = $1 AND password = $2",
+      [nombre, password]
+    );
     if (result.rows.length > 0) {
-      res.send("🎉 Login exitoso, bienvenido " + nombre);
+      res.send(`<h1>🎉 Bienvenido ${nombre}</h1><a href="/">Cerrar sesión</a>`);
     } else {
-      res.send("❌ Usuario o contraseña incorrectos");
+      res.send(`
+        <p>❌ Usuario o contraseña incorrectos</p>
+        <a href="/">Volver al login</a>
+      `);
     }
   } catch (err) {
     console.error(err);
