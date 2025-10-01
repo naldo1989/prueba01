@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 );
 
 -- Tabla registros
-CREATE TABLE registros (
+CREATE TABLE IF NOT EXISTS registros (
     id SERIAL PRIMARY KEY,
     id_usuario INT NOT NULL,
     escuela INT NOT NULL,
