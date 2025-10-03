@@ -110,5 +110,4 @@ app.post("/registros", async (req, res) => {
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/login");
-});// Iniciar
-app.listen(PORT, () => console.log(`Servidor en puerto ${PORT}`));
+});
