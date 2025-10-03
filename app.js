@@ -6,9 +6,8 @@ const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en puerto ${PORT}`);
 });
 
 // Middlewares
@@ -111,7 +110,5 @@ app.post("/registros", async (req, res) => {
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/login");
-});
-
-// Iniciar
+});// Iniciar
 app.listen(PORT, () => console.log(`Servidor en puerto ${PORT}`));
