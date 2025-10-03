@@ -1,7 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
-const { Pool } = require("pg");
+const pool = require('./db'); 
 const path = require("path");
 
 const app = express();
@@ -9,6 +9,8 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
 });
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Middlewares
 app.set("view engine", "ejs");
