@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registros</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <h1>Registros de votos</h1>
+  <p>Escuela: <%= user.escuela %> | Mesa: <%= user.mesa %></p>
+
+  <form method="POST" action="/registros">
+    <label>Cantidad:</label>
+    <input type="number" name="cantidad" required>
+    <button type="submit">Registrar</button>
+  </form>
+
+  <h2>Historial</h2>
+  <table border="1">
+    <tr><th>ID</th><th>Cantidad</th><th>Fecha</th></tr>
+    <% if (registros.length > 0) { %>
+      <% registros.forEach(r => { %>
+        <tr>
+          <td><%= r.id %></td>
+          <td><%= r.cantidad %></td>
+          <td><%= r.fecha %></td>
+        </tr>
+      <% }) %>
+    <% } else { %>
+      <tr><td colspan="3">Sin registros aún</td></tr>
+    <% } %>
+  </table>
+
+  <br><a href="/dashboard">Volver</a> | <a href="/logout">Salir</a>
+</body>
+</html>
