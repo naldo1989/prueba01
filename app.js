@@ -47,20 +47,19 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Registro
-app.get("/register", (req, res) => res.render("register"));
-app.post("/register", async (req, res) => {
-  const { dni, nombre, apellido, email } = req.body;
-  const password = dni.slice(-3); // últimos 3 del DNI
+app.post('/register', async (req, res) => {
+  const { dni, nombre, apellido } = req.body;
+  const password = dni.slice(-3); // últimos 3 dígitos
+
   try {
     await pool.query(
-      "INSERT INTO usuarios (dni, nombre, apellido, email, password) VALUES ($1, $2, $3, $4, $5)",
-      [dni, nombre, apellido, email, password]
+      'INSERT INTO usuarios (dni, nombre, apellido, password) VALUES ($1, $2, $3, $4)',
+      [dni, nombre, apellido, password]
     );
-    res.redirect("/login");
+    res.redirect('/login');
   } catch (err) {
     console.error("Error registrando usuario:", err);
-    res.send("Error al registrar usuario");
+    res.status(500).send("Error registrando usuario");
   }
 });
 
